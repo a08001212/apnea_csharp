@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "5P1+2Pjdf9+yLYRAJwZ2cKpkz26rSfxuXPog+n1v3XlL7iRIxPLLtTgCm7oBsiqlf+HF08f0SFPVJi6vmCghrQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\USER\\test\\apnea\\apnea\\apnea.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\USER\\.nuget\\packages\\opencvsharp4\\4.9.0.20240103\\opencvsharp4.4.9.0.20240103.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\opencvsharp4.runtime.win\\4.9.0.20240103\\opencvsharp4.runtime.win.4.9.0.20240103.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
