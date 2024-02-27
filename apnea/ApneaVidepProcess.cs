@@ -1,4 +1,5 @@
-﻿using OpenCvSharp;
+﻿using System.Collections;
+using OpenCvSharp;
 
 namespace apnea;
 
@@ -6,8 +7,11 @@ public class ApneaVidepProcess
 {
     private string video_path;
     private double fps;
+    private int videoWidth, videoHeight;
+
     private VideoCapture videoCapture;
     private CascadeClassifier detector;
+    private List<OutputArray> frames;
     public ApneaVidepProcess(string video_path)
     {
         this.video_path = video_path;
@@ -20,14 +24,20 @@ public class ApneaVidepProcess
             Console.WriteLine(e);
             throw;
         }
+
+        videoWidth = (int)videoCapture.Get(VideoCaptureProperties.FrameWidth);
+        videoHeight = (int)videoCapture.Get(VideoCaptureProperties.FrameHeight);
+
         fps = videoCapture.Get(VideoCaptureProperties.Fps);
         // string path = "apnea/haarcascades/haarcascade_frontalface_alt2.xml";
         // detector.Load("apnea/haarcascades/haarcascade_frontalface_alt2.xml");
         while (true)
         {
-            ret, frame = videoCapture.Read();
+            OutputArray frame = new OutputArray(Mat<int>(videoHeight, videoWidth));
+            var ret = videoCapture.Read(frame);
             if(!ret)    break;
-            Cv2.CvtColor(frame, Cv2.Color);
+            // Cv2.CvtColor(frame, Cv2.Color);
+            frames.Add(frame);
         }
     }
 

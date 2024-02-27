@@ -7,7 +7,8 @@ namespace apnea
         static void Main(String[] args)
         {
             ApneaVidepProcess video = new ApneaVidepProcess(args[0]);
-            Console.Write(video.get_fps());
+            Console.WriteLine(video.get_fps());
+            Console.WriteLine("Finish.");
         }
     }
 }
