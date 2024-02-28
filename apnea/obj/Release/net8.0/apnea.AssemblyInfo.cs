@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("apnea")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eb97548b44c2b09c77b23118592f2fbccb68866a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+39fcd99ed4f7e7f68ceaf9f571a9197a47675811")]
 [assembly: System.Reflection.AssemblyProductAttribute("apnea")]
 [assembly: System.Reflection.AssemblyTitleAttribute("apnea")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
