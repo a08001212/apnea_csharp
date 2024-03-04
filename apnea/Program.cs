@@ -6,10 +6,14 @@ namespace apnea
     {
         static void Main(String[] args)
         {
-            ApneaVidepProcess video = new ApneaVidepProcess(args[0]);
+            ApneaVideoProcess video = new ApneaVideoProcess(args[0]);
             Console.WriteLine(video.get_fps());
+            video.get_rr_rate().ForEach(val => Console.Write($"{val}, "));
+            video.write_to_csv("test.csv");
             Console.WriteLine("Finish.");
-        }
+            
+        }            
+
     }
 }
 

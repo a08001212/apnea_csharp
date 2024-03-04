@@ -46,6 +46,15 @@ public class ApneaVideoProcess
         
     }
 
+    public void write_to_csv(string filePath)
+    {
+        string s = "";
+        rr_rate.ForEach(val => s += val.ToString()+",");
+        // var csv = new StringBuilder();
+        // csv.AppendLine(s[..^1]);
+        File.WriteAllText(filePath, s);
+    }
+
     public List<double> get_rr_rate()
     {
         return rr_rate;
@@ -72,8 +81,9 @@ public class ApneaVideoProcess
         return faces[ans];
     }
 
-    private void get_chest_area(Rect face)
+    private void get_chest_area(Mat<int> frame)
     {
+        Rect face = find_face(frame);
         int start_x = int.Max((int)(face.X - face.Width * 1.2), 0);
         int start_y = int.Min(videoHeight-1, (int)(face.Y + 1.3 * face.Height));
         int end_x = int.Min(videoWidth-1, (int)(face.Width * 3.5 + start_x)) - start_x;
@@ -90,10 +100,16 @@ public class ApneaVideoProcess
         rr_rate.Clear();
         double last_data = 0.0;
         Mat<int> frame = new Mat<int>(videoHeight, videoWidth);
+        bool first_frame = true;
         while (videoCapture.Read(frame))
         {
-            double frame_gray_value;
             Cv2.CvtColor(frame, frame, ColorConversionCodes.RGB2GRAY);
+            if (first_frame)
+            {
+                get_chest_area(frame);
+                first_frame = false;
+            }
+            double frame_gray_value;
             Mat<int> chest_img = get_chest_img(frame);
             
             // can't find chest
