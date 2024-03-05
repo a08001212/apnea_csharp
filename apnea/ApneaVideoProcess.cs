@@ -118,15 +118,16 @@ public class ApneaVideoProcess
                 rr_rate.Add(last_data);
                 continue;
             }
-            var super_pixel = SuperpixelSLIC.Create(chest_img,SLICType.SLICO, 10, 0.075F);
+            var super_pixel = SuperpixelSLIC.Create(chest_img,SLICType.SLICO, 150, 0.075F);
             super_pixel.Iterate(10);
-            Mat<int> super_pixel_res = new Mat<int>(super_pixel.GetNumberOfSuperpixels(), super_pixel.GetNumberOfSuperpixels());
-            super_pixel.GetLabels(super_pixel_res);
-            var data = super_pixel_res.ToArray();
-            int sum = data.Sum();
-            last_data = sum / (double)super_pixel.GetNumberOfSuperpixels();
-            // Console.WriteLine($"{sum / (double)super_pixel.GetNumberOfSuperpixels()}");
-            rr_rate.Add(last_data);
+            Mat<int> mask = new Mat<int>(chest_img.Height, chest_img.Width);
+            Mat<int> labels = new Mat<int>(super_pixel.GetNumberOfSuperpixels(), super_pixel.GetNumberOfSuperpixels());
+            super_pixel.EnforceLabelConnectivity(100);
+            super_pixel.GetLabelContourMask(mask);
+            super_pixel.GetLabels(labels);
+            chest_img.SetTo(new Scalar(255,255,255), mask);
+            Cv2.ImShow("test", chest_img);
+            Cv2.WaitKey(1);
         }
     }
     public double get_fps()
