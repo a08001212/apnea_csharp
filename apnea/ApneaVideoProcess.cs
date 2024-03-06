@@ -63,7 +63,6 @@ public class ApneaVideoProcess
     {
 
         var faces = detector.DetectMultiScale(frame, 1.1, 3);
-        // can't find face
         if (faces.Length == 0)
         {
             return new Rect(-1, -1, -1, -1);
@@ -84,16 +83,26 @@ public class ApneaVideoProcess
     private void get_chest_area(Mat<int> frame)
     {
         Rect face = find_face(frame);
-        int start_x = int.Max((int)(face.X - face.Width * 1.2), 0);
-        int start_y = int.Min(videoHeight-1, (int)(face.Y + 1.3 * face.Height));
-        int end_x = int.Min(videoWidth-1, (int)(face.Width * 3.5 + start_x)) - start_x;
-        int end_y = int.Min(videoHeight-1, face.Height * 2 + start_y) - start_y;
+        if (face.X == -1)
+        {
+            chest_area = face;
+            return;
+        }
+
+        int start_x = int.Max((int)(face.X - face.Width ), 0);
+        int start_y = int.Min(videoHeight-1, (int)(face.Y + 1.25 * face.Height));
+        int end_x = int.Min(videoWidth-1, (int)(face.Width * 3 + start_x)) - start_x;
+        int end_y = int.Min(videoHeight-1, (int)(face.Height * 1.25 + start_y)) - start_y;
         chest_area = new Rect(start_x, start_y, end_x, end_y);
     }
 
     private Mat<int> get_chest_img(Mat<int> frame)
     {
-          return new Mat<int>(frame, chest_area);
+        if (chest_area.X == -1)
+        {
+            return new Mat<int>(0,0);
+        }
+        return new Mat<int>(frame, chest_area);
     }
     private void get_breath_data()
     {
@@ -101,12 +110,16 @@ public class ApneaVideoProcess
         double last_data = 0.0;
         Mat<int> frame = new Mat<int>(videoHeight, videoWidth);
         bool first_frame = true;
+        double rr_rate_sum = .0;
         while (videoCapture.Read(frame))
         {
             Cv2.CvtColor(frame, frame, ColorConversionCodes.RGB2GRAY);
             if (first_frame)
             {
                 get_chest_area(frame);
+                // can't find chest
+                if(chest_area.X == -1)
+                    continue;
                 first_frame = false;
             }
             double frame_gray_value;
@@ -125,10 +138,24 @@ public class ApneaVideoProcess
             super_pixel.EnforceLabelConnectivity(100);
             super_pixel.GetLabelContourMask(mask);
             super_pixel.GetLabels(labels);
-            chest_img.SetTo(new Scalar(255,255,255), mask);
-            Cv2.ImShow("test", chest_img);
-            Cv2.WaitKey(1);
+
+            Cv2.BitwiseAnd(chest_img, mask, chest_img);
+            var img_sum = Cv2.Sum(chest_img);
+            var mask_count = Cv2.Sum(mask);
+            // show chest 
+            // Cv2.ImShow("test", chest_img);
+            // Cv2.WaitKey(1);
+            double ans = (double)img_sum[0] / mask_count[0];
+            rr_rate.Add(ans);
+            rr_rate_sum += ans;
         }
+
+        double rr_rate_average = rr_rate_sum / rr_rate.Count;
+        for (int i = 0; i < rr_rate.Count; ++i)
+        {
+            rr_rate[i] -= rr_rate_average;
+        }
+        
     }
     public double get_fps()
     {
